@@ -1,5 +1,3 @@
-# Analisys_Mensual_Transaccions
-
 # 📊 Banking Transactions Analysis with SQL
 
 ## 📌 Description
