@@ -1,0 +1,11 @@
+--- TASK 7
+SELECT 
+    -- Analyze transaction date by month
+    DATE_TRUNC(transaction_date, MONTH) AS mes,
+    COUNT(*) AS num_transacciones, -- Count the number of transactions per month
+    AVG(CAST(amount AS NUMERIC)) AS promedio_gastado -- Calculate the average transaction amount per month
+FROM `myproject-487315.myproyect.transacciones_bancarias` 
+-- Group results by month
+GROUP BY mes
+-- Order results by month
+ORDER BY mes;
