@@ -1,0 +1,26 @@
+--- TASK 4
+WITH gastos_por_cliente AS (
+  SELECT
+    -- Analyze the transaction date by month
+    DATE_TRUNC(transaction_date, MONTH) AS mes,
+    customer_id, -- Identify the customer
+    SUM(CAST(amount AS NUMERIC)) AS total_gastado -- Sum all amounts per customer per month
+  FROM `myproject-487315.myproyect.transacciones_bancarias` 
+  -- Group results by customer and month
+  GROUP BY customer_id, mes 
+  ORDER BY customer_id, mes
+)
+SELECT 
+    mes, -- Month of the transactions
+    customer_id, -- Customer ID
+    total_gastado -- Total spent by the customer in that month
+FROM (
+  SELECT *,
+    -- Rank customers by total spent per month
+    ROW_NUMBER() OVER (PARTITION BY mes ORDER BY total_gastado DESC) AS ranking
+  FROM gastos_por_cliente
+)
+-- Keep only the top 5 customers per month
+WHERE ranking <= 5
+-- Order by month and ranking
+ORDER BY mes, ranking DESC;
