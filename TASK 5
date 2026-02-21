@@ -1,0 +1,25 @@
+--- TASK 5
+WITH gastos_por_categoria AS (
+  SELECT
+      -- Analyze the transaction date by month
+      DATE_TRUNC(transaction_date, MONTH) AS mes,
+      category, -- Transaction category
+      SUM(CAST(amount AS NUMERIC)) AS total_gastado -- Total spent per category
+  FROM `myproject-487315.myproyect.transacciones_bancarias` 
+  -- Group by month and category
+  GROUP BY mes, category
+)
+SELECT
+   mes, -- Month of the transactions
+   category, -- Category name
+   total_gastado -- Total spent in that category
+FROM (
+  SELECT *,
+    -- Rank categories by total spent per month
+    ROW_NUMBER() OVER(PARTITION BY mes ORDER BY total_gastado DESC) AS ranking
+  FROM gastos_por_categoria
+)
+-- Keep only the highest spending category per month
+WHERE ranking = 1 
+-- Order by month
+ORDER BY mes;
