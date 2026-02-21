@@ -1,0 +1,10 @@
+--- TASK 1
+SELECT 
+    -- First we select the columns that want to see
+    DATE_TRUNC(transaction_date, MONTH) AS mes, -- Analice the transaction date by the month
+    customer_id,
+    SUM(CAST(amount AS NUMERIC)) AS total_gastado -- Change the column amount to a numeric type and sum it
+FROM `myproject-487315.myproyect.transacciones_bancarias` 
+-- We group an order the results by the month and customers
+GROUP BY customer_id, mes 
+ORDER BY customer_id, mes
