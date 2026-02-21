@@ -1,0 +1,29 @@
+--- TASK 6
+WITH gasto_mensual AS (
+  SELECT 
+    -- Analyze transaction date by month
+    DATE_TRUNC(DATE(transaction_date), MONTH) AS mes,
+    customer_id, -- Customer ID
+    SUM(CAST(amount AS NUMERIC)) AS total_gastado -- Total spending per month per customer
+  FROM `myproject-487315.myproyect.transacciones_bancarias` 
+  -- Consider only debit transactions
+  WHERE transaction_type = 'Débito'
+  GROUP BY mes, customer_id
+),
+gasto_con_anterior AS (
+  SELECT 
+    mes, -- Month
+    customer_id, -- Customer ID
+    total_gastado, -- Total spent in that month
+    -- Look at spending in the previous month for the same customer
+    LAG(total_gastado) OVER(PARTITION BY customer_id ORDER BY mes) AS gasto_mes_anterior
+  FROM gasto_mensual
+)
+SELECT customer_id -- Select customers
+FROM gasto_con_anterior
+-- Only consider rows where there is a previous month
+WHERE gasto_mes_anterior IS NOT NULL
+GROUP BY customer_id
+-- Keep only customers whose spending increased every month
+HAVING COUNTIF(total_gastado <= gasto_mes_anterior) = 0
+ORDER BY customer_id;
