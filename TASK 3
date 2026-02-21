@@ -1,0 +1,9 @@
+--- TASK 3
+SELECT 
+    -- First we select the columns that want to see
+    DATE_TRUNC(transaction_date, MONTH) AS mes, -- Analice the transaction date by the month
+    COUNT(*) AS numero_de_transacciones -- Count the number of transactions
+FROM `myproject-487315.myproyect.transacciones_bancarias` 
+-- We group an order the results by the month
+GROUP BY mes
+ORDER BY mes
